@@ -341,7 +341,7 @@ export default function DashboardPage() {
 
       {/* Footer */}
       <div className="flex items-center justify-between text-sm text-gray-500">
-        <span className="text-blue-600 font-medium">API Organizer Pro</span>
+        <span className="text-blue-600 font-medium">SaaS API Pro</span>
         <span>Powered by Next.js</span>
       </div>
 

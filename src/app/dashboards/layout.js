@@ -10,9 +10,9 @@ export default function DashboardLayout({ children }) {
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-red-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">A</span>
+              <span className="text-white font-bold text-lg">S</span>
             </div>
-            <span className="text-xl font-bold text-gray-900">API Organizer</span>
+            <span className="text-xl font-bold text-gray-900">SaaS API</span>
           </div>
         </div>
 
@@ -98,7 +98,7 @@ export default function DashboardLayout({ children }) {
               <nav className="text-sm text-gray-500 mb-1">
                 <span>Pages / Overview</span>
               </nav>
-              <h1 className="text-2xl font-bold text-gray-900">Overview</h1>
+              <h1 className="text-2xl font-bold text-gray-900">SaaS API Dashboard</h1>
             </div>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 text-sm text-green-600">

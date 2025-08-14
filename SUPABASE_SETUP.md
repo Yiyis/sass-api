@@ -1,6 +1,6 @@
 # Supabase Setup Guide
 
-This guide will help you connect your API Organizer dashboard to a Supabase database.
+This guide will help you connect your SaaS API dashboard to a Supabase database.
 
 ## 🚀 **Step 1: Create a Supabase Project**
 
@@ -8,7 +8,7 @@ This guide will help you connect your API Organizer dashboard to a Supabase data
 2. Click "New Project"
 3. Choose your organization
 4. Enter project details:
-   - **Name**: `api-organizer` (or your preferred name)
+   - **Name**: `sass-api` (or your preferred name)
    - **Database Password**: Choose a strong password
    - **Region**: Select the region closest to your users
 5. Click "Create new project"
@@ -19,6 +19,7 @@ This guide will help you connect your API Organizer dashboard to a Supabase data
 2. Copy the following values:
    - **Project URL**: `https://your-project-id.supabase.co`
    - **Anon/Public Key**: The `anon` key (starts with `eyJ...`)
+   - **Service Role Key**: The `service_role` key (for admin operations)
 
 ## 📝 **Step 3: Update Environment Variables**
 
@@ -27,6 +28,7 @@ This guide will help you connect your API Organizer dashboard to a Supabase data
    # Supabase Configuration
    NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
+   SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
    ```
 
 2. Replace the placeholder values with your actual Supabase credentials
