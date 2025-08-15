@@ -127,9 +127,9 @@ export default function DashboardClient() {
   const handleEdit = (key) => {
     setEditingKey(key)
     setFormData({
-      name: key.name,
-      description: key.description,
-      permissions: key.permissions
+      name: key.name || '',
+      description: key.description || '',
+      permissions: Array.isArray(key.permissions) ? key.permissions : []
     })
     setIsModalOpen(true)
   }
@@ -466,17 +466,17 @@ export default function DashboardClient() {
                     <label key={permission} className="flex items-center">
                       <input
                         type="checkbox"
-                        checked={formData.permissions.includes(permission)}
+                        checked={Array.isArray(formData.permissions) && formData.permissions.includes(permission)}
                         onChange={(e) => {
                           if (e.target.checked) {
                             setFormData(prev => ({
                               ...prev,
-                              permissions: [...prev.permissions, permission]
+                              permissions: [...(Array.isArray(prev.permissions) ? prev.permissions : []), permission]
                             }))
                           } else {
                             setFormData(prev => ({
                               ...prev,
-                              permissions: prev.permissions.filter(p => p !== permission)
+                              permissions: (Array.isArray(prev.permissions) ? prev.permissions : []).filter(p => p !== permission)
                             }))
                           }
                         }}
