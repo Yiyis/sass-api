@@ -18,6 +18,7 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
   const [totalUsage, setTotalUsage] = useState(0)
+  const [copySuccess, setCopySuccess] = useState({})
 
   // Fetch API keys from database
   useEffect(() => {
@@ -131,9 +132,49 @@ export default function DashboardPage() {
     setIsModalOpen(false)
   }
 
-  const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text)
-    // You could add a toast notification here
+  const copyToClipboard = async (text, keyId) => {
+    try {
+      // Try the modern clipboard API first
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text)
+        // Show success feedback
+        setError(null)
+        setCopySuccess(prev => ({ ...prev, [keyId]: true }))
+        // Hide success message after 2 seconds
+        setTimeout(() => {
+          setCopySuccess(prev => ({ ...prev, [keyId]: false }))
+        }, 2000)
+        console.log('Copied to clipboard successfully')
+      } else {
+        // Fallback for older browsers or non-secure contexts
+        const textArea = document.createElement('textarea')
+        textArea.value = text
+        textArea.style.position = 'fixed'
+        textArea.style.left = '-999999px'
+        textArea.style.top = '-999999px'
+        document.body.appendChild(textArea)
+        textArea.focus()
+        textArea.select()
+        
+        try {
+          document.execCommand('copy')
+          textArea.remove()
+          setError(null)
+          setCopySuccess(prev => ({ ...prev, [keyId]: true }))
+          // Hide success message after 2 seconds
+          setTimeout(() => {
+            setCopySuccess(prev => ({ ...prev, [keyId]: false }))
+          }, 2000)
+          console.log('Copied to clipboard using fallback method')
+        } catch (err) {
+          textArea.remove()
+          throw new Error('Fallback copy method failed')
+        }
+      }
+    } catch (err) {
+      console.error('Failed to copy to clipboard:', err)
+      setError('Failed to copy to clipboard. Please copy manually.')
+    }
   }
 
   const toggleApiKeyVisibility = (id) => {
@@ -289,11 +330,21 @@ export default function DashboardPage() {
                             {showApiKey[key.id] ? <EyeOff size={16} /> : <Eye size={16} />}
                           </button>
                           <button
-                            onClick={() => copyToClipboard(key.key)}
-                            className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
-                            title="Copy"
+                            onClick={() => copyToClipboard(key.key, key.id)}
+                            className={`p-1 transition-colors ${
+                              copySuccess[key.id] 
+                                ? 'text-green-600' 
+                                : 'text-gray-400 hover:text-blue-600'
+                            }`}
+                            title={copySuccess[key.id] ? 'Copied!' : 'Copy'}
                           >
-                            <Copy size={16} />
+                            {copySuccess[key.id] ? (
+                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                            ) : (
+                              <Copy size={16} />
+                            )}
                           </button>
                           <button
                             onClick={() => handleEdit(key)}
