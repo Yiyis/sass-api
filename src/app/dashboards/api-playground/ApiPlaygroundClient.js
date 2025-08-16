@@ -66,7 +66,7 @@ export default function ApiPlaygroundClient() {
         </div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">API Playground</h1>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          Test and validate your API keys. Enter an API key below to check if it's valid and see its details.
+          Test and validate your API keys. Enter an API key below to check if it&apos;s valid and see its details.
         </p>
       </div>
 
@@ -88,7 +88,7 @@ export default function ApiPlaygroundClient() {
                 disabled={isValidating}
               />
               <p className="mt-2 text-sm text-gray-500">
-                Your API key should start with "api_" followed by a unique identifier
+                Your API key should start with &quot;api_&quot; followed by a unique identifier
               </p>
             </div>
 
@@ -233,7 +233,7 @@ export default function ApiPlaygroundClient() {
           <h3 className="font-semibold text-gray-900 mb-3">How to use the API Playground</h3>
           <div className="space-y-2 text-sm text-gray-600">
             <p>1. <strong>Enter your API key</strong> in the form above</p>
-            <p>2. <strong>Click "Validate Key"</strong> to check if the key is valid</p>
+            <p>2. <strong>Click &quot;Validate Key&quot;</strong> to check if the key is valid</p>
             <p>3. <strong>View the results</strong> to see key details and permissions</p>
             <p>4. <strong>Use valid keys</strong> in your API requests</p>
           </div>
