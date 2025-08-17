@@ -10,38 +10,38 @@ export default function ApiKeysTable({
   onDelete 
 }) {
   return (
-    <div className="overflow-hidden border border-gray-200 rounded-lg">
+    <div className="overflow-hidden border border-border/30 rounded-lg glass-subtle">
       <table className="w-full">
-        <thead className="bg-gray-50">
+        <thead className="bg-muted/20">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NAME</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">TYPE</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">USAGE</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KEY</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">OPTIONS</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">NAME</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">TYPE</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">USAGE</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">KEY</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">OPTIONS</th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="divide-y divide-border/30">
           {apiKeys.map((key) => (
-            <tr key={key.id} className="hover:bg-gray-50">
+            <tr key={key.id} className="hover:bg-muted/10 transition-colors">
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm font-medium text-gray-900">{key.name}</div>
+                <div className="text-sm font-medium text-foreground">{key.name}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                   key.type === 'live' 
-                    ? 'bg-green-100 text-green-800' 
-                    : 'bg-yellow-100 text-yellow-800'
+                    ? 'bg-green-500/20 text-green-400' 
+                    : 'bg-yellow-500/20 text-yellow-400'
                 }`}>
                   {key.type}
                 </span>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                 {key.usage?.toLocaleString() || '0'}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center gap-2">
-                  <code className="text-sm font-mono text-gray-600">
+                  <code className="text-sm font-mono text-muted-foreground">
                     {showApiKey[key.id] ? key.key : `${key.key.substring(0, 8)}••••••••••••••••••••••••`}
                   </code>
                 </div>
@@ -50,7 +50,7 @@ export default function ApiKeysTable({
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => onToggleVisibility(key.id)}
-                    className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+                    className="p-1 text-muted-foreground hover:text-foreground transition-colors"
                     title={showApiKey[key.id] ? 'Hide' : 'Show'}
                   >
                     {showApiKey[key.id] ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -59,8 +59,8 @@ export default function ApiKeysTable({
                     onClick={() => onCopy(key.key, key.id)}
                     className={`p-1 transition-colors ${
                       copySuccess[key.id] 
-                        ? 'text-green-600' 
-                        : 'text-gray-400 hover:text-blue-600'
+                        ? 'text-green-400' 
+                        : 'text-muted-foreground hover:text-primary'
                     }`}
                     title={copySuccess[key.id] ? 'Copied!' : 'Copy'}
                   >
@@ -74,14 +74,14 @@ export default function ApiKeysTable({
                   </button>
                   <button
                     onClick={() => onEdit(key)}
-                    className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                    className="p-1 text-muted-foreground hover:text-primary transition-colors"
                     title="Edit"
                   >
                     <Edit size={16} />
                   </button>
                   <button
                     onClick={() => onDelete(key.id)}
-                    className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                    className="p-1 text-muted-foreground hover:text-red-400 transition-colors"
                     title="Delete"
                   >
                     <Trash2 size={16} />
