@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ArrowLeft, Home, Code, Star, CreditCard, Settings, FileText, Globe, LogOut, User, Menu, X } from 'lucide-react'
+import ProtectedRoute from '@/components/ProtectedRoute'
 
 export default function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -211,7 +212,9 @@ export default function DashboardLayout({ children }) {
 
         {/* Main Content */}
         <main className="flex-1 p-4 lg:p-8">
-          {children}
+          <ProtectedRoute>
+            {children}
+          </ProtectedRoute>
         </main>
       </div>
     </div>
