@@ -4,10 +4,10 @@ import { ArrowRight, Shield, Zap, Users } from "lucide-react"
 
 export function HeroSection() {
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-background">
+    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-background via-background to-primary/5">
       <div className="container mx-auto text-center max-w-4xl">
         <div className="mb-8">
-          <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80 mb-6">
+          <div className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 glass-subtle text-primary-foreground hover:bg-primary/30 mb-6">
             🚀 Now with AI-powered GitHub analysis
           </div>
         </div>

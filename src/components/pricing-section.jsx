@@ -50,7 +50,7 @@ export function PricingSection() {
   ]
 
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-background">
+    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-background via-secondary/20 to-background">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-foreground mb-4">Choose Your Plan</h2>
@@ -63,8 +63,8 @@ export function PricingSection() {
           {plans.map((plan, index) => (
             <Card
               key={plan.name}
-              className={`relative ${
-                plan.popular ? "ring-2 ring-primary shadow-lg" : ""
+              className={`relative glass hover:glass-strong ${
+                plan.popular ? "ring-2 ring-primary glow-purple" : ""
               }`}
             >
               {plan.popular && (

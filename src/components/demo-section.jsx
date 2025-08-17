@@ -5,7 +5,7 @@ import { ArrowRight, Play, Code, BarChart3 } from "lucide-react"
 
 export function DemoSection() {
   return (
-    <section id="demo" className="py-24 px-4 sm:px-6 lg:px-8 bg-background">
+    <section id="demo" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-background via-background to-primary/5">
       <div className="container mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold text-foreground mb-4">
@@ -79,7 +79,7 @@ export function DemoSection() {
           </div>
           
           <div className="space-y-6">
-            <Card className="border-2 border-primary/20">
+            <Card className="glass-strong border-2 border-primary/30">
               <CardHeader>
                 <CardTitle className="text-primary">API Key Management</CardTitle>
                 <CardDescription>
@@ -88,19 +88,19 @@ export function DemoSection() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
-                    <span className="text-sm font-mono">api_live_123456...</span>
-                    <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Active</span>
+                  <div className="flex justify-between items-center p-3 glass-subtle rounded-lg">
+                    <span className="text-sm font-mono text-foreground">api_live_123456...</span>
+                    <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded border border-green-500/30">Active</span>
                   </div>
-                  <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
-                    <span className="text-sm font-mono">api_dev_abcdef...</span>
-                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Dev</span>
+                  <div className="flex justify-between items-center p-3 glass-subtle rounded-lg">
+                    <span className="text-sm font-mono text-foreground">api_dev_abcdef...</span>
+                    <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded border border-blue-500/30">Dev</span>
                   </div>
                 </div>
               </CardContent>
             </Card>
             
-            <Card className="border-2 border-primary/20">
+            <Card className="glass-strong border-2 border-primary/30">
               <CardHeader>
                 <CardTitle className="text-primary">GitHub Analysis</CardTitle>
                 <CardDescription>
@@ -109,7 +109,7 @@ export function DemoSection() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="p-3 bg-muted rounded-lg">
+                  <div className="p-3 glass-subtle rounded-lg">
                     <div className="text-sm font-semibold text-foreground mb-1">Repository Summary</div>
                     <div className="text-xs text-muted-foreground">
                       Intelligent analysis of your project structure, features, and architecture...

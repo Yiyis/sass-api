@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 
 export function CTASection() {
   return (
-    <section className="py-20 px-4 relative bg-background">
+    <section className="py-20 px-4 relative bg-gradient-to-br from-background via-primary/5 to-background">
       <div className="container mx-auto text-center max-w-3xl">
         <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
           Ready to Analyze Your GitHub Repositories?

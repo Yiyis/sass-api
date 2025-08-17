@@ -46,7 +46,7 @@ export function FeaturesSection() {
   ]
 
   return (
-    <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-muted/30">
+    <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-background via-secondary/20 to-background">
       <div className="container mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold text-foreground mb-4">
@@ -60,7 +60,7 @@ export function FeaturesSection() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature, index) => (
-            <Card key={index} className="border-0 shadow-sm hover:shadow-md transition-shadow">
+            <Card key={index} className="glass hover:glass-strong transition-all duration-300 hover:scale-105">
               <CardHeader className="pb-4">
                 <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mb-2">
                   <feature.icon className="w-5 h-5 text-primary" />
