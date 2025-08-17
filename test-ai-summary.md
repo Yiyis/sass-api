@@ -73,9 +73,10 @@ The `aiSummary` field contains:
 
 The chain uses:
 - **Prompt Template**: Structured instructions for repository analysis
-- **Output Parser**: Ensures consistent JSON structure
+- **withStructuredOutput**: Modern Zod schema validation bound directly to the model
 - **RunnableSequence**: Efficient chain execution
 - **Error Handling**: Graceful fallback if AI fails
+- **Zod Schema**: Type-safe output validation with automatic parsing
 
 ## Test Different Repositories
 
