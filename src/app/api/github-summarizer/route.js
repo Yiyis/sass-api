@@ -1,4 +1,5 @@
 import { supabaseAdmin } from '@/lib/supabase'
+import { summarizeGitHubRepo } from '@/lib/langchain-chain'
 
 export async function POST(request) {
   try {
@@ -173,13 +174,22 @@ export async function POST(request) {
     try {
       const readme = await fetchGitHubReadme(targetOwner, targetRepo, githubToken)
 
-      // Return success response with README
+      // Generate AI summary using LangChain
+      const aiSummary = await summarizeGitHubRepo(readme.content)
+
+      // Return success response with README and AI summary
       return Response.json({
         success: true,
-        message: 'GitHub README fetched successfully',
+        message: 'GitHub README fetched and summarized successfully',
         repository: `${targetOwner}/${targetRepo}`,
         extractedFrom: githubUrl ? { githubUrl, owner: targetOwner, repo: targetRepo } : { owner: targetOwner, repo: targetRepo },
         readme,
+        aiSummary: aiSummary.success ? {
+          summary: aiSummary.summary,
+          cool_facts: aiSummary.cool_facts
+        } : {
+          error: aiSummary.error
+        },
         keyDetails: {
           name: apiKeyData.name || 'N/A',
           description: apiKeyData.description || 'N/A',

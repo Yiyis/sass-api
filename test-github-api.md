@@ -81,6 +81,7 @@ The API returns:
 - **File Metadata**: Filename, path, size, SHA hash
 - **Download URL**: Direct link to download the file
 - **Repository Info**: Owner/repo name for reference
+- **AI Summary**: Intelligent analysis with summary and cool facts using cost-effective GPT-5-nano (requires OpenAI API key)
 
 ## Response Format
 ```json
