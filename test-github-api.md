@@ -31,6 +31,8 @@ curl --location --request POST 'http://localhost:3000/api/github-summarizer' \
 }'
 ```
 
+**Note**: The API now returns only the AI summary, not the raw README content, for cleaner responses.
+
 ### Method 2: Using Owner and Repo (Legacy)
 ```bash
 curl --location --request POST 'http://localhost:3000/api/github-summarizer' \
@@ -77,31 +79,28 @@ curl --location --request POST 'http://localhost:3000/api/github-summarizer' \
 ## What You'll Get
 
 The API returns:
-- **README Content**: The full text content of the README file
-- **File Metadata**: Filename, path, size, SHA hash
-- **Download URL**: Direct link to download the file
 - **Repository Info**: Owner/repo name for reference
 - **AI Summary**: Intelligent analysis with summary and cool facts using cost-effective GPT-5-nano (requires OpenAI API key)
+- **No Raw README**: Only the processed AI summary to keep responses clean and focused
 
 ## Response Format
 ```json
 {
   "success": true,
-  "message": "GitHub README fetched successfully",
+  "message": "GitHub README analyzed and summarized successfully",
   "repository": "assafelovic/gpt-researcher",
   "extractedFrom": {
     "githubUrl": "https://github.com/assafelovic/gpt-researcher",
     "owner": "assafelovic",
     "repo": "gpt-researcher"
   },
-  "readme": {
-    "filename": "README.md",
-    "path": "README.md",
-    "size": 12345,
-    "sha": "abc123...",
-    "content": "# GPT Researcher\n\nAn autonomous research agent...",
-    "encoding": "base64",
-    "download_url": "https://raw.githubusercontent.com/..."
+  "aiSummary": {
+    "summary": "GPT Researcher is an autonomous research agent...",
+    "cool_facts": [
+      "Uses GPT-4 for intelligent analysis",
+      "Can research any topic autonomously",
+      "Generates comprehensive research reports"
+    ]
   },
   "keyDetails": { ... }
 }
@@ -130,8 +129,8 @@ GitHub API has rate limits:
 2. **Extracts owner and repo** from GitHub URLs automatically
 3. **Fetches README.md** from the repository root
 4. **Falls back to README** (without extension) if README.md not found
-5. **Decodes base64 content** to readable text
-6. **Returns formatted response** with content and metadata
+5. **Processes content** through AI analysis using GPT-5-nano
+6. **Returns clean response** with only the AI summary and metadata
 
 ## URL Parsing
 

@@ -34,21 +34,12 @@ curl --location --request POST 'http://localhost:3000/api/github-summarizer' \
 ```json
 {
   "success": true,
-  "message": "GitHub README fetched and summarized successfully",
+  "message": "GitHub README analyzed and summarized successfully",
   "repository": "assafelovic/gpt-researcher",
   "extractedFrom": {
     "githubUrl": "https://github.com/assafelovic/gpt-researcher",
     "owner": "assafelovic",
     "repo": "gpt-researcher"
-  },
-  "readme": {
-    "filename": "README.md",
-    "path": "README.md",
-    "size": 12345,
-    "sha": "abc123...",
-    "content": "# GPT Researcher\n\nAn autonomous research agent...",
-    "encoding": "base64",
-    "download_url": "https://raw.githubusercontent.com/..."
   },
   "aiSummary": {
     "summary": "GPT Researcher is an autonomous research agent that can conduct comprehensive research on any given topic. It uses GPT-4 to analyze information from multiple sources and generate detailed research reports. The tool is designed to automate the research process, making it faster and more thorough than manual research methods.",

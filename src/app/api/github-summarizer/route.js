@@ -177,13 +177,12 @@ export async function POST(request) {
       // Generate AI summary using LangChain
       const aiSummary = await summarizeGitHubRepo(readme.content)
 
-      // Return success response with README and AI summary
+      // Return success response with AI summary only
       return Response.json({
         success: true,
-        message: 'GitHub README fetched and summarized successfully',
+        message: 'GitHub README analyzed and summarized successfully',
         repository: `${targetOwner}/${targetRepo}`,
         extractedFrom: githubUrl ? { githubUrl, owner: targetOwner, repo: targetRepo } : { owner: targetOwner, repo: targetRepo },
-        readme,
         aiSummary: aiSummary.success ? {
           summary: aiSummary.summary,
           cool_facts: aiSummary.cool_facts
