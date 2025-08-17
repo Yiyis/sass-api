@@ -13,8 +13,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata = {
-  title: "SaaS API Management System",
-  description: "A comprehensive dashboard for managing your SaaS API keys with full CRUD operations",
+  title: "GitHub Analyzer - AI-Powered Repository Analysis",
+  description: "A comprehensive platform for analyzing GitHub repositories with AI, managing API keys, and gaining development insights",
 };
 
 export default function RootLayout({ children }) {
