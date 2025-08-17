@@ -94,31 +94,47 @@
 /* Added liquid glass utility classes for glassmorphism effects */
 @layer utilities {
   .glass {
-    backdrop-filter: blur(24px);
-    background-color: var(--card);
-    border: 1px solid var(--border);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(32px) saturate(180%);
+    background: linear-gradient(135deg, var(--card) 0%, rgba(255, 255, 255, 0.05) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+      0 8px 32px 0 rgba(31, 38, 135, 0.4),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
+      0 0 0 1px rgba(255, 255, 255, 0.05);
   }
 
   .glass-strong {
-    backdrop-filter: blur(40px);
-    background-color: var(--card);
-    border: 1px solid var(--border);
-    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(48px) saturate(200%);
+    background: linear-gradient(135deg, var(--card) 0%, rgba(255, 255, 255, 0.08) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 
+      0 16px 48px 0 rgba(31, 38, 135, 0.6),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.08),
+      0 0 20px rgba(255, 255, 255, 0.05);
   }
 
   .glass-subtle {
-    backdrop-filter: blur(12px);
-    background-color: var(--card);
-    border: 1px solid var(--border);
-    box-shadow: 0 4px 24px 0 rgba(31, 38, 135, 0.2), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px) saturate(150%);
+    background: linear-gradient(135deg, var(--card) 0%, rgba(255, 255, 255, 0.03) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 
+      0 4px 24px 0 rgba(31, 38, 135, 0.3),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.08),
+      0 0 0 1px rgba(255, 255, 255, 0.03);
   }
 
   .glow-purple {
-    box-shadow: 0 0 20px oklch(0.65 0.18 280 / 0.3);
+    box-shadow: 
+      0 0 20px oklch(0.65 0.18 280 / 0.4),
+      0 0 40px oklch(0.65 0.18 280 / 0.2),
+      0 0 60px oklch(0.65 0.18 280 / 0.1);
   }
 
   .glow-accent {
-    box-shadow: 0 0 20px oklch(0.75 0.2 260 / 0.3);
+    box-shadow: 
+      0 0 20px oklch(0.75 0.2 260 / 0.4),
+      0 0 40px oklch(0.75 0.2 260 / 0.2),
+      0 0 60px oklch(0.75 0.2 260 / 0.1);
   }
 }
