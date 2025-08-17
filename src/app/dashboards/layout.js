@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ArrowLeft, Home, Code, Star, CreditCard, Settings, FileText, Globe, LogOut, User, Menu, X } from 'lucide-react'
+import { Home, Code, Star, CreditCard, Settings, FileText, Menu, X } from 'lucide-react'
 import ProtectedRoute from '@/components/ProtectedRoute'
 
 export default function DashboardLayout({ children }) {
@@ -56,7 +56,9 @@ export default function DashboardLayout({ children }) {
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
             <div className="w-6 h-6 bg-blue-500 rounded-md flex items-center justify-center">
-              <User size={16} className="text-white" />
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
             </div>
             <span className="text-sm font-medium text-gray-700">Personal</span>
             <svg className="w-4 h-4 text-gray-400 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -152,19 +154,7 @@ export default function DashboardLayout({ children }) {
           </ul>
         </nav>
 
-        {/* User Section */}
-        <div className="p-4 border-t border-gray-200">
-          <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
-            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-              <span className="text-white font-medium text-sm">YO</span>
-            </div>
-            <div className="flex-1">
-              <div className="text-sm font-medium text-gray-700">Your Name</div>
-              <div className="text-xs text-gray-500">your@email.com</div>
-            </div>
-            <LogOut size={16} className="text-gray-400" />
-          </div>
-        </div>
+        {/* User Section - Removed duplicate, user info shown in ProtectedRoute header */}
       </div>
 
       {/* Main Content Area */}
