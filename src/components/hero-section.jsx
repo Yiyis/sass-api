@@ -29,9 +29,6 @@ export function HeroSection() {
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
-          <Button size="lg" variant="outline" asChild>
-            <Link href="/dashboards">View Demo</Link>
-          </Button>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">

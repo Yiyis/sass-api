@@ -30,9 +30,6 @@ export function Header() {
             </Link>
           </nav>
           <div className="flex items-center space-x-2">
-            <Button variant="outline" asChild>
-              <Link href="/dashboards">View Demo</Link>
-            </Button>
             <Button asChild>
               <Link href="/auth/signin">Sign In</Link>
             </Button>

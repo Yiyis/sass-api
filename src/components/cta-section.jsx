@@ -14,9 +14,6 @@ export function CTASection() {
           <Button size="lg" className="px-8">
             Get Started Free
           </Button>
-          <Button size="lg" variant="outline" className="px-8">
-            View Demo
-          </Button>
         </div>
       </div>
     </section>
