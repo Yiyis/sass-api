@@ -9,13 +9,13 @@ export default function ApiKeyModal({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div className="glass-strong rounded-lg max-w-md w-full p-6 border border-border/30">
-        <h2 className="text-xl font-semibold mb-4 text-foreground">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50">
+      <div className="glass-strong rounded-lg max-w-md w-full p-4 sm:p-6 border border-border/30">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4 text-foreground">
           {editingKey ? 'Edit API Key' : 'Create New API Key'}
         </h2>
         
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form onSubmit={onSubmit} className="space-y-3 sm:space-y-4">
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">
               Name
@@ -68,17 +68,17 @@ export default function ApiKeyModal({
             </div>
           </div>
           
-          <div className="flex gap-3 pt-4">
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <button
               type="submit"
-              className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground py-2 px-4 rounded-md transition-colors"
+              className="w-full sm:flex-1 bg-primary hover:bg-primary/90 text-primary-foreground py-2 px-4 rounded-md transition-colors"
             >
               {editingKey ? 'Update' : 'Create'}
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-muted hover:bg-muted/80 text-muted-foreground py-2 px-4 rounded-md transition-colors"
+              className="w-full sm:flex-1 bg-muted hover:bg-muted/80 text-muted-foreground py-2 px-4 rounded-md transition-colors"
             >
               Cancel
             </button>

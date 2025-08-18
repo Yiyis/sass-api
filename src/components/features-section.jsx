@@ -46,19 +46,19 @@ export function FeaturesSection() {
   ]
 
   return (
-    <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-background via-secondary/20 to-background">
+    <section id="features" className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-background via-secondary/20 to-background">
       <div className="container mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-foreground mb-4">
+        <div className="text-center mb-12 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4">
             Everything You Need to Analyze GitHub Repositories
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
             From AI-powered repository analysis to advanced API key management, 
             we've got you covered with a comprehensive set of features.
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {features.map((feature, index) => (
             <Card key={index} className="glass hover:glass-strong transition-all duration-300 hover:scale-105">
               <CardHeader className="pb-4">

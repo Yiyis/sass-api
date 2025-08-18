@@ -4,13 +4,13 @@ export default function CurrentPlan({ totalUsage }) {
   const totalCredits = 10000 // Mock total credits
 
   return (
-    <div className="glass-strong rounded-xl p-6 border border-border/30">
-      <div className="flex items-start justify-between mb-6">
+    <div className="glass-strong rounded-xl p-4 sm:p-6 border border-border/30">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
         <div>
           <div className="text-sm font-medium text-muted-foreground mb-1">CURRENT PLAN</div>
-          <h2 className="text-3xl font-bold text-foreground">Professional</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-foreground">Professional</h2>
         </div>
-        <button className="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+        <button className="bg-primary/20 hover:bg-primary/30 text-primary px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors w-full sm:w-auto">
           <CreditCard size={16} />
           Manage Plan
         </button>

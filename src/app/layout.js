@@ -15,6 +15,8 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata = {
   title: "GitHub Analyzer - AI-Powered Repository Analysis",
   description: "A comprehensive platform for analyzing GitHub repositories with AI, managing API keys, and gaining development insights",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
+  themeColor: "#7c3aed",
 };
 
 export default function RootLayout({ children }) {

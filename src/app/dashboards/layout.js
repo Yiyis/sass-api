@@ -30,17 +30,17 @@ export default function DashboardLayout({ children }) {
 
       {/* Left Sidebar */}
       <div className={`
-        fixed inset-y-0 left-0 z-50 w-64 glass-strong border-r border-border flex flex-col transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0
+        fixed inset-y-0 left-0 z-50 w-80 sm:w-64 glass-strong border-r border-border flex flex-col transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         {/* Logo Section */}
-        <div className="p-6 border-b border-border/30">
+        <div className="p-4 sm:p-6 border-b border-border/30">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center glow-purple">
                 <span className="text-primary-foreground font-bold text-lg">G</span>
               </div>
-              <span className="text-xl font-bold text-foreground">GitHub Analyzer</span>
+              <span className="text-lg sm:text-xl font-bold text-foreground">GitHub Analyzer</span>
             </div>
             {/* Close button for mobile */}
             <button 
@@ -68,8 +68,8 @@ export default function DashboardLayout({ children }) {
         </div>
 
         {/* Navigation Menu */}
-        <nav className="flex-1 p-4">
-          <ul className="space-y-2">
+        <nav className="flex-1 p-3 sm:p-4">
+          <ul className="space-y-1 sm:space-y-2">
             <li>
               <Link 
                 href="/dashboards" 
@@ -160,9 +160,9 @@ export default function DashboardLayout({ children }) {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col">
         {/* Top Header */}
-        <header className="glass border-b border-border/30 px-4 lg:px-8 py-4">
+        <header className="glass border-b border-border/30 px-3 sm:px-4 lg:px-6 xl:px-8 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               {/* Mobile menu button */}
               <button 
                 onClick={toggleSidebar}
@@ -171,11 +171,11 @@ export default function DashboardLayout({ children }) {
                 <Menu size={20} />
               </button>
               
-              <div>
-                <nav className="text-sm text-muted-foreground mb-1">
-                  <span>Pages / {pathname === '/dashboards' ? 'Overview' : pathname.split('/').pop().replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+              <div className="min-w-0 flex-1">
+                <nav className="text-xs sm:text-sm text-muted-foreground mb-1">
+                  <span className="truncate">Pages / {pathname === '/dashboards' ? 'Overview' : pathname.split('/').pop().replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
                 </nav>
-                <h1 className="text-2xl font-bold text-foreground">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground truncate">
                   {pathname === '/dashboards' ? 'GitHub Analyzer Dashboard' : 
                    pathname === '/dashboards/api-playground' ? 'API Playground' :
                    pathname === '/dashboards/use-cases' ? 'Use Cases' :
@@ -189,7 +189,7 @@ export default function DashboardLayout({ children }) {
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 p-4 lg:p-8 bg-background">
+        <main className="flex-1 p-3 sm:p-4 lg:p-6 xl:p-8 bg-background">
           <ProtectedRoute>
             {children}
           </ProtectedRoute>

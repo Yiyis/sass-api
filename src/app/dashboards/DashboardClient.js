@@ -197,25 +197,25 @@ export default function DashboardClient() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <BackToHome />
       
       <CurrentPlan totalUsage={totalUsage} />
 
       {/* API Keys Section */}
-      <div className="glass rounded-xl border border-border/30 p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold text-foreground">API Keys</h3>
+      <div className="glass rounded-xl border border-border/30 p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <h3 className="text-lg sm:text-xl font-semibold text-foreground">API Keys</h3>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors w-full sm:w-auto"
           >
             <Plus size={16} />
             Add
           </button>
         </div>
         
-        <p className="text-muted-foreground mb-6">
+        <p className="text-muted-foreground mb-6 text-sm sm:text-base">
           The key is used to authenticate your requests to the API. To learn more, see the{' '}
           <a href="#" className="text-primary hover:text-primary/90 underline">documentation page</a>.
         </p>
@@ -244,7 +244,7 @@ export default function DashboardClient() {
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between text-sm text-muted-foreground">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-muted-foreground text-center sm:text-left">
         <span className="text-primary font-medium">GitHub Analyzer Pro</span>
         <span>Powered by Next.js</span>
       </div>
