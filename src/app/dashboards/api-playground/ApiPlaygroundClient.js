@@ -58,24 +58,24 @@ export default function ApiPlaygroundClient() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 mt-8">
       {/* Header */}
       <div className="text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
-          <Play className="w-8 h-8 text-blue-600" />
+        <div className="inline-flex items-center justify-center w-16 h-16 glass-subtle rounded-full mb-4 glow-purple">
+          <Play className="w-8 h-8 text-primary" />
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">API Playground</h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
+        <h1 className="text-3xl font-bold text-foreground mb-2">API Playground</h1>
+        <p className="text-muted-foreground max-w-2xl mx-auto">
           Test and validate your API keys. Enter an API key below to check if it&apos;s valid and see its details.
         </p>
       </div>
 
       {/* API Key Validation Form */}
       <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <div className="glass rounded-xl p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="apiKey" className="block text-sm font-medium text-gray-900 mb-2">
+              <label htmlFor="apiKey" className="block text-sm font-medium text-foreground mb-2">
                 API Key
               </label>
               <input
@@ -84,10 +84,10 @@ export default function ApiPlaygroundClient() {
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder="Enter your API key (e.g., api_live_1234567890abcdef)"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-500 font-mono text-sm"
+                className="w-full px-4 py-3 glass-subtle rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-foreground placeholder-muted-foreground font-mono text-sm transition-all duration-200"
                 disabled={isValidating}
               />
-              <p className="mt-2 text-sm text-gray-500">
+              <p className="mt-2 text-sm text-muted-foreground">
                 Your API key should start with &quot;api_&quot; followed by a unique identifier
               </p>
             </div>
@@ -96,7 +96,7 @@ export default function ApiPlaygroundClient() {
               <button
                 type="submit"
                 disabled={isValidating || !apiKey.trim()}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                className="flex-1 bg-primary hover:bg-primary/90 disabled:bg-muted disabled:cursor-not-allowed text-primary-foreground py-3 px-4 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 glow-purple hover:glow-purple"
               >
                 {isValidating ? (
                   <>
@@ -115,7 +115,7 @@ export default function ApiPlaygroundClient() {
                 type="button"
                 onClick={handleReset}
                 disabled={isValidating}
-                className="px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium transition-colors"
+                className="px-6 py-3 glass-subtle text-foreground hover:glass-strong disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium transition-all duration-200"
               >
                 Reset
               </button>
@@ -127,12 +127,12 @@ export default function ApiPlaygroundClient() {
       {/* Error Display */}
       {error && (
         <div className="max-w-2xl mx-auto">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <div className="flex items-center gap-3 text-red-800">
+          <div className="glass-subtle rounded-lg p-4 border border-destructive/20 bg-destructive/5">
+            <div className="flex items-center gap-3 text-destructive">
               <XCircle className="w-5 h-5 flex-shrink-0" />
               <div>
                 <h3 className="font-medium">Validation Error</h3>
-                <p className="text-sm text-red-700 mt-1">{error}</p>
+                <p className="text-sm text-destructive/80 mt-1">{error}</p>
               </div>
             </div>
           </div>
@@ -142,59 +142,59 @@ export default function ApiPlaygroundClient() {
       {/* Validation Result */}
       {validationResult && (
         <div className="max-w-2xl mx-auto">
-          <div className={`border rounded-lg p-6 ${
+          <div className={`glass rounded-lg p-6 border ${
             validationResult.isValid 
-              ? 'bg-green-50 border-green-200' 
-              : 'bg-red-50 border-red-200'
+              ? 'border-green-500/20 bg-green-500/5' 
+              : 'border-destructive/20 bg-destructive/5'
           }`}>
             <div className="flex items-start gap-3">
               {validationResult.isValid ? (
-                <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5" />
               ) : (
-                <XCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
+                <XCircle className="w-6 h-6 text-destructive flex-shrink-0 mt-0.5" />
               )}
               
               <div className="flex-1">
                 <h3 className={`text-lg font-semibold ${
-                  validationResult.isValid ? 'text-green-800' : 'text-red-800'
+                  validationResult.isValid ? 'text-green-300' : 'text-destructive'
                 }`}>
                   {validationResult.isValid ? 'Valid API Key' : 'Invalid API Key'}
                 </h3>
                 
                 <p className={`mt-2 ${
-                  validationResult.isValid ? 'text-green-700' : 'text-red-700'
+                  validationResult.isValid ? 'text-green-400/80' : 'text-destructive/80'
                 }`}>
                   {validationResult.message}
                 </p>
 
                                  {/* Key Details */}
                  {validationResult.isValid && validationResult.keyDetails && (
-                   <div className="mt-4 p-4 bg-white rounded-lg border border-green-200">
-                     <h4 className="font-medium text-green-800 mb-3">Key Details</h4>
+                   <div className="mt-4 p-4 glass-subtle rounded-lg border border-green-500/20">
+                     <h4 className="font-medium text-green-300 mb-3">Key Details</h4>
                      <div className="space-y-2 text-sm">
                        <div className="flex justify-between">
-                         <span className="text-gray-600">Name:</span>
-                         <span className="font-medium text-gray-900">{validationResult.keyDetails.name || 'N/A'}</span>
+                         <span className="text-muted-foreground">Name:</span>
+                         <span className="font-medium text-foreground">{validationResult.keyDetails.name || 'N/A'}</span>
                        </div>
                        {validationResult.keyDetails.description && (
                          <div className="flex justify-between">
-                           <span className="text-gray-600">Description:</span>
-                           <span className="font-medium text-gray-900">{validationResult.keyDetails.description}</span>
+                           <span className="text-muted-foreground">Description:</span>
+                           <span className="font-medium text-foreground">{validationResult.keyDetails.description}</span>
                          </div>
                        )}
                        <div className="flex justify-between">
-                         <span className="text-gray-600">Type:</span>
+                         <span className="text-muted-foreground">Type:</span>
                          <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
                            validationResult.keyDetails.type === 'live' 
-                             ? 'bg-green-100 text-green-800' 
-                             : 'bg-yellow-100 text-yellow-800'
+                             ? 'bg-green-500/20 text-green-300 border border-green-500/30' 
+                             : 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
                          }`}>
                            {validationResult.keyDetails.type || 'unknown'}
                          </span>
                        </div>
                        <div className="flex justify-between">
-                         <span className="text-gray-600">Usage:</span>
-                         <span className="font-medium text-gray-900">
+                         <span className="text-muted-foreground">Usage:</span>
+                         <span className="font-medium text-foreground">
                            {typeof validationResult.keyDetails.usage === 'number' 
                              ? validationResult.keyDetails.usage.toLocaleString() 
                              : '0'
@@ -202,8 +202,8 @@ export default function ApiPlaygroundClient() {
                          </span>
                        </div>
                        <div className="flex justify-between">
-                         <span className="text-gray-600">Permissions:</span>
-                         <span className="font-medium text-gray-900">
+                         <span className="text-muted-foreground">Permissions:</span>
+                         <span className="font-medium text-foreground">
                            {Array.isArray(validationResult.keyDetails.permissions) && validationResult.keyDetails.permissions.length > 0 
                              ? validationResult.keyDetails.permissions.join(', ')
                              : 'None'
@@ -212,8 +212,8 @@ export default function ApiPlaygroundClient() {
                        </div>
                        {validationResult.keyDetails.created_at && (
                          <div className="flex justify-between">
-                           <span className="text-gray-600">Created:</span>
-                           <span className="font-medium text-gray-900">
+                           <span className="text-muted-foreground">Created:</span>
+                           <span className="font-medium text-foreground">
                              {new Date(validationResult.keyDetails.created_at).toLocaleDateString()}
                            </span>
                          </div>
@@ -229,22 +229,22 @@ export default function ApiPlaygroundClient() {
 
       {/* Usage Instructions */}
       <div className="max-w-2xl mx-auto">
-        <div className="bg-gray-50 rounded-lg p-6">
-          <h3 className="font-semibold text-gray-900 mb-3">How to use the API Playground</h3>
-          <div className="space-y-2 text-sm text-gray-600">
-            <p>1. <strong>Enter your API key</strong> in the form above</p>
-            <p>2. <strong>Click &quot;Validate Key&quot;</strong> to check if the key is valid</p>
-            <p>3. <strong>View the results</strong> to see key details and permissions</p>
-            <p>4. <strong>Use valid keys</strong> in your API requests</p>
+        <div className="glass rounded-lg p-6">
+          <h3 className="font-semibold text-foreground mb-3">How to use the API Playground</h3>
+          <div className="space-y-2 text-sm text-muted-foreground">
+            <p>1. <strong className="text-foreground">Enter your API key</strong> in the form above</p>
+            <p>2. <strong className="text-foreground">Click &quot;Validate Key&quot;</strong> to check if the key is valid</p>
+            <p>3. <strong className="text-foreground">View the results</strong> to see key details and permissions</p>
+            <p>4. <strong className="text-foreground">Use valid keys</strong> in your API requests</p>
           </div>
           
-          <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <h4 className="font-medium text-blue-800 mb-2">API Key Format</h4>
-            <p className="text-sm text-blue-700">
-              Valid API keys follow this pattern: <code className="bg-blue-100 px-2 py-1 rounded text-blue-800">api_[type]_[identifier]</code>
+          <div className="mt-4 p-4 glass-subtle rounded-lg border border-primary/20 bg-primary/5">
+            <h4 className="font-medium text-primary mb-2">API Key Format</h4>
+            <p className="text-sm text-foreground/80">
+              Valid API keys follow this pattern: <code className="glass-subtle px-2 py-1 rounded text-primary font-mono">api_[type]_[identifier]</code>
             </p>
-            <p className="text-sm text-blue-700 mt-1">
-              Example: <code className="bg-blue-100 px-2 py-1 rounded text-blue-800">api_live_1234567890abcdef</code>
+            <p className="text-sm text-foreground/80 mt-1">
+              Example: <code className="glass-subtle px-2 py-1 rounded text-primary font-mono">api_live_1234567890abcdef</code>
             </p>
           </div>
         </div>
