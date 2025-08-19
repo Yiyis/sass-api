@@ -99,9 +99,14 @@ export async function POST(request) {
       console.log('Warning: No GitHub token provided. Using unauthenticated requests with rate limits.')
     }
 
-    // Fetch README from GitHub
+    // Fetch repository data from GitHub
     try {
-      const readme = await fetchGitHubReadme(targetOwner, targetRepo, githubToken)
+      // Fetch README and repository metadata in parallel
+      const [readme, repoData, latestRelease] = await Promise.all([
+        fetchGitHubReadme(targetOwner, targetRepo, githubToken),
+        fetchRepositoryData(targetOwner, targetRepo, githubToken),
+        fetchLatestRelease(targetOwner, targetRepo, githubToken)
+      ])
 
       // Generate AI summary using LangChain
       const aiSummary = await summarizeGitHubRepo(readme.content)
@@ -109,12 +114,38 @@ export async function POST(request) {
       // Get rate limit headers for successful response
       const rateLimitHeaders = RateLimiter.createRateLimitResponse(rateLimitResult.rateLimitInfo, 200).headers
 
-      // Return success response with AI summary and rate limit headers
+      // Return success response with AI summary, repository data, and rate limit headers
       return Response.json({
         success: true,
-        message: 'GitHub README analyzed and summarized successfully',
+        message: 'GitHub repository analyzed and summarized successfully',
         repository: `${targetOwner}/${targetRepo}`,
         extractedFrom: githubUrl ? { githubUrl, owner: targetOwner, repo: targetRepo } : { owner: targetOwner, repo: targetRepo },
+        repositoryData: {
+          name: repoData.name,
+          full_name: repoData.full_name,
+          description: repoData.description,
+          stars: repoData.stargazers_count,
+          forks: repoData.forks_count,
+          watchers: repoData.watchers_count,
+          language: repoData.language,
+          size: repoData.size,
+          created_at: repoData.created_at,
+          updated_at: repoData.updated_at,
+          pushed_at: repoData.pushed_at,
+          default_branch: repoData.default_branch,
+          topics: repoData.topics || [],
+          license: repoData.license ? repoData.license.name : null,
+          is_private: repoData.private,
+          html_url: repoData.html_url
+        },
+        latestRelease: latestRelease ? {
+          tag_name: latestRelease.tag_name,
+          name: latestRelease.name,
+          published_at: latestRelease.published_at,
+          prerelease: latestRelease.prerelease,
+          draft: latestRelease.draft,
+          html_url: latestRelease.html_url
+        } : null,
         aiSummary: aiSummary.success ? {
           summary: aiSummary.summary,
           cool_facts: aiSummary.cool_facts
@@ -139,7 +170,7 @@ export async function POST(request) {
       return Response.json(
         { 
           success: false, 
-          error: `Failed to fetch README: ${githubError.message}` 
+          error: `Failed to fetch repository data: ${githubError.message}` 
         },
         { status: 500 }
       )
@@ -232,5 +263,68 @@ async function fetchGitHubReadme(owner, repo, token) {
   } catch (error) {
     console.error('GitHub README API Error:', error)
     throw new Error(`Failed to fetch README: ${error.message}`)
+  }
+}
+
+// GitHub repository data fetcher function
+async function fetchRepositoryData(owner, repo, token) {
+  try {
+    const headers = {
+      'Accept': 'application/vnd.github.v3+json',
+      'User-Agent': 'SaaS-API-System'
+    }
+    
+    // Add authorization header only if token is provided
+    if (token) {
+      headers['Authorization'] = `token ${token}`
+    }
+
+    const repoResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}`, { headers })
+    
+    if (!repoResponse.ok) {
+      throw new Error(`Repository not found: ${repoResponse.status === 404 ? 'Repository does not exist or is private' : 'GitHub API error'}`)
+    }
+
+    const repoData = await repoResponse.json()
+    return repoData
+
+  } catch (error) {
+    console.error('GitHub Repository API Error:', error)
+    throw new Error(`Failed to fetch repository data: ${error.message}`)
+  }
+}
+
+// GitHub latest release fetcher function
+async function fetchLatestRelease(owner, repo, token) {
+  try {
+    const headers = {
+      'Accept': 'application/vnd.github.v3+json',
+      'User-Agent': 'SaaS-API-System'
+    }
+    
+    // Add authorization header only if token is provided
+    if (token) {
+      headers['Authorization'] = `token ${token}`
+    }
+
+    const releaseResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/releases/latest`, { headers })
+    
+    if (!releaseResponse.ok) {
+      if (releaseResponse.status === 404) {
+        // No releases found - this is common and not an error
+        console.log(`No releases found for ${owner}/${repo}`)
+        return null
+      }
+      throw new Error(`Failed to fetch latest release: GitHub API error ${releaseResponse.status}`)
+    }
+
+    const releaseData = await releaseResponse.json()
+    return releaseData
+
+  } catch (error) {
+    console.error('GitHub Release API Error:', error)
+    // Don't throw error for releases - just return null if not available
+    console.log(`Latest release not available for ${owner}/${repo}: ${error.message}`)
+    return null
   }
 }
