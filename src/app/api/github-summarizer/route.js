@@ -1,23 +1,32 @@
-import { supabaseAdmin } from '@/lib/supabase'
 import { summarizeGitHubRepo } from '@/lib/langchain-chain'
+import { RateLimiter } from '@/lib/rate-limiter'
 
 export async function POST(request) {
   try {
-    // Check for API key in headers first (common pattern)
+    // Extract API key from headers or body
     const authHeader = request.headers.get('apiKey') || request.headers.get('authorization')
     let apiKey = authHeader
+    let requestBody
     
-    // If not in headers, try to get from request body
-    if (!apiKey) {
-      try {
-        const body = await request.json()
-        apiKey = body.apiKey
-      } catch (parseError) {
-        // If body parsing fails, continue with header value
+    // Parse request body first to get apiKey if not in headers
+    try {
+      requestBody = await request.json()
+      if (!apiKey) {
+        apiKey = requestBody.apiKey
+      }
+    } catch (parseError) {
+      if (!apiKey) {
+        return Response.json(
+          { 
+            success: false, 
+            error: 'Invalid JSON in request body' 
+          },
+          { status: 400 }
+        )
       }
     }
 
-    // Validate input
+    // Validate API key presence
     if (!apiKey) {
       return Response.json(
         { 
@@ -28,110 +37,30 @@ export async function POST(request) {
       )
     }
 
-    // Check if API key format is valid
-    if (!apiKey.startsWith('api_')) {
+    // Validate API key format and permissions
+    const validation = await RateLimiter.validateApiKey(apiKey, ['read'])
+    if (!validation.valid) {
       return Response.json(
         { 
           success: false, 
-          error: 'Invalid API key format. Must start with "api_"' 
+          error: validation.error 
         },
-        { status: 400 }
+        { status: validation.error.includes('Invalid API key') ? 401 : 403 }
       )
     }
 
-    // Query the database to validate the API key
-    console.log('Validating API key:', apiKey)
+    // Check rate limits and increment usage atomically
+    const rateLimitResult = await RateLimiter.checkAndIncrementUsage(apiKey, 1)
     
-    const { data: apiKeyData, error } = await supabaseAdmin
-      .from('api_keys')
-      .select('*')
-      .eq('key', apiKey)
-      .single()
-
-    if (error) {
-      console.error('Supabase error:', error)
-      return Response.json(
-        { 
-          success: false, 
-          error: 'Database error during validation' 
-        },
-        { status: 500 }
-      )
+    if (!rateLimitResult.allowed) {
+      // Rate limit exceeded - return 429 with detailed information
+      return RateLimiter.createRateLimitResponse(rateLimitResult.rateLimitInfo, 429)
     }
 
-    if (!apiKeyData) {
-      return Response.json(
-        { 
-          success: false, 
-          error: 'Invalid API key' 
-        },
-        { status: 401 }
-      )
-    }
+    const apiKeyData = rateLimitResult.apiKeyData
 
-
-
-    // Check if the API key has the required permissions
-    const requiredPermissions = ['read']
-    
-    // Parse permissions if it's a string (JSON)
-    let permissions = apiKeyData.permissions
-    if (typeof permissions === 'string') {
-      try {
-        permissions = JSON.parse(permissions)
-      } catch (parseError) {
-        console.error('Failed to parse permissions JSON:', parseError)
-        permissions = []
-      }
-    }
-    
-    const hasRequiredPermissions = requiredPermissions.every(permission => 
-      Array.isArray(permissions) && 
-      permissions.includes(permission)
-    )
-
-    if (!hasRequiredPermissions) {
-      return Response.json(
-        { 
-          success: false, 
-          error: 'Insufficient permissions. Requires read access.'
-        },
-        { status: 403 }
-      )
-    }
-
-    // Check usage limits (if applicable)
-    if (apiKeyData.usage_limit && apiKeyData.usage >= apiKeyData.usage_limit) {
-      return Response.json(
-        { 
-          success: false, 
-          error: 'Usage limit exceeded' 
-        },
-        { status: 429 }
-      )
-    }
-
-    // Increment usage count
-    await supabaseAdmin
-      .from('api_keys')
-      .update({ usage: (apiKeyData.usage || 0) + 1 })
-      .eq('key', apiKey)
-
-    // Get request body for GitHub repository details
-    let requestBody
-    try {
-      requestBody = await request.json()
-    } catch (parseError) {
-      return Response.json(
-        { 
-          success: false, 
-          error: 'Invalid JSON in request body' 
-        },
-        { status: 400 }
-      )
-    }
-
-    const { owner, repo, githubUrl } = requestBody
+    // Extract GitHub repository details from request body (already parsed above)
+    const { owner, repo, githubUrl } = requestBody || {}
 
     let targetOwner, targetRepo
 
@@ -177,7 +106,10 @@ export async function POST(request) {
       // Generate AI summary using LangChain
       const aiSummary = await summarizeGitHubRepo(readme.content)
 
-      // Return success response with AI summary only
+      // Get rate limit headers for successful response
+      const rateLimitHeaders = RateLimiter.createRateLimitResponse(rateLimitResult.rateLimitInfo, 200).headers
+
+      // Return success response with AI summary and rate limit headers
       return Response.json({
         success: true,
         message: 'GitHub README analyzed and summarized successfully',
@@ -193,11 +125,15 @@ export async function POST(request) {
           name: apiKeyData.name || 'N/A',
           description: apiKeyData.description || 'N/A',
           type: apiKeyData.type || 'unknown',
-          permissions: Array.isArray(permissions) ? permissions : [],
-          usage: apiKeyData.usage || 0,
-          usage_limit: apiKeyData.usage_limit || null,
+          permissions: apiKeyData.permissions || [],
+          usage: rateLimitResult.rateLimitInfo.current,
+          usage_limit: rateLimitResult.rateLimitInfo.limit,
+          remaining: rateLimitResult.rateLimitInfo.remaining,
+          rate_limit_reset_at: rateLimitResult.rateLimitInfo.resetAt,
           created_at: apiKeyData.created_at || null
         }
+      }, {
+        headers: rateLimitHeaders
       })
     } catch (githubError) {
       return Response.json(
