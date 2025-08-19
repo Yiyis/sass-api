@@ -52,7 +52,7 @@ export function Header() {
 
         {/* Mobile dropdown */}
         {isOpen && (
-          <div className="sm:hidden absolute top-16 left-0 right-0 px-4 sm:px-6 glass-subtle border-b border-border/40">
+          <div className="sm:hidden absolute top-16 left-0 right-0 px-4 sm:px-6 z-60 glass-strong border-b border-border/40 glass-enhance">
             <div className="p-4 flex flex-col gap-3">
               <Link href="#features" className="transition-colors hover:text-foreground text-foreground/80" onClick={() => setIsOpen(false)}>
                 Features
