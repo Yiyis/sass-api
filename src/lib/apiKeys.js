@@ -1,11 +1,11 @@
-// Client-side API keys service using Next.js API routes
+// Client-side API keys service using authenticated REST endpoints
 
 // Create a new API key
 export async function createApiKey(apiKeyData) {
   try {
     console.log('createApiKey: Starting...')
     
-    const response = await fetch('/api/api-keys', {
+    const response = await fetch('/api/user/api-keys', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ export async function getApiKeys() {
   try {
     console.log('getApiKeys: Starting...')
     
-    const response = await fetch('/api/api-keys')
+    const response = await fetch('/api/user/api-keys')
     const result = await response.json()
 
     console.log('getApiKeys: Response:', result)
@@ -51,7 +51,7 @@ export async function getApiKeys() {
 // Get a single API key by ID
 export async function getApiKeyById(id) {
   try {
-    const response = await fetch(`/api/api-keys?id=${id}`)
+    const response = await fetch(`/api/user/api-keys/${id}`)
     const result = await response.json()
 
     if (!response.ok) {
@@ -68,12 +68,12 @@ export async function getApiKeyById(id) {
 // Update an API key
 export async function updateApiKey(id, updateData) {
   try {
-    const response = await fetch('/api/api-keys', {
+    const response = await fetch(`/api/user/api-keys/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id, ...updateData }),
+      body: JSON.stringify(updateData),
     })
 
     const result = await response.json()
@@ -92,7 +92,7 @@ export async function updateApiKey(id, updateData) {
 // Delete an API key
 export async function deleteApiKey(id) {
   try {
-    const response = await fetch(`/api/api-keys?id=${id}`, {
+    const response = await fetch(`/api/user/api-keys/${id}`, {
       method: 'DELETE',
     })
 
@@ -110,14 +110,14 @@ export async function deleteApiKey(id) {
 }
 
 // Update API key usage
-export async function updateApiKeyUsage(id, usage) {
+export async function updateApiKeyUsage(keyId, incrementUsage = 1) {
   try {
-    const response = await fetch('/api/api-keys', {
-      method: 'PUT',
+    const response = await fetch('/api/user/api-keys/usage', {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id, usage }),
+      body: JSON.stringify({ keyId, incrementUsage }),
     })
 
     const result = await response.json()
@@ -136,14 +136,15 @@ export async function updateApiKeyUsage(id, usage) {
 // Get total usage across all API keys
 export async function getTotalUsage() {
   try {
-    const response = await fetch('/api/api-keys/usage')
+    const response = await fetch('/api/user/api-keys/usage')
     const result = await response.json()
 
     if (!response.ok) {
       throw new Error(result.error || 'Failed to get total usage')
     }
 
-    return result
+    // Extract totalUsage from the analytics response
+    return { data: result.data?.totalUsage || 0, error: null }
   } catch (error) {
     console.error('Error calculating total usage:', error)
     return { data: 0, error }
