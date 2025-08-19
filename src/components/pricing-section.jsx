@@ -74,9 +74,16 @@ export function PricingSection() {
                   </span>
                 </div>
               )}
-
+              
               <CardHeader className="text-center pb-8">
                 <CardTitle className="text-2xl font-bold text-foreground mb-2">{plan.name}</CardTitle>
+                {plan.name !== "Free" && (
+                  <div className="mb-3">
+                    <span className="glass-subtle text-muted-foreground px-3 py-1 rounded-full text-xs font-medium border border-border/50">
+                      Coming Soon
+                    </span>
+                  </div>
+                )}
                 <div className="mb-4">
                   <span className="text-4xl font-bold text-foreground">{plan.price}</span>
                   <span className="text-muted-foreground ml-2">/{plan.period}</span>
@@ -96,11 +103,12 @@ export function PricingSection() {
 
                 <Button
                   className={`w-full ${
-                    plan.popular
-                      ? "bg-primary hover:bg-primary/90"
-                      : "bg-secondary hover:bg-secondary/80 text-secondary-foreground"
+                    plan.name === "Free"
+                      ? "bg-primary hover:bg-primary/90 glow-purple"
+                      : "glass-subtle text-muted-foreground cursor-not-allowed hover:glass-subtle"
                   }`}
                   size="lg"
+                  disabled={plan.name !== "Free"}
                 >
                   {plan.name === "Free" ? "Get Started Free" : `Choose ${plan.name}`}
                 </Button>
