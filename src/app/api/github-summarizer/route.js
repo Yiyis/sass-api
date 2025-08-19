@@ -49,16 +49,6 @@ export async function POST(request) {
       )
     }
 
-    // Check rate limits and increment usage atomically
-    const rateLimitResult = await RateLimiter.checkAndIncrementUsage(apiKey, 1)
-    
-    if (!rateLimitResult.allowed) {
-      // Rate limit exceeded - return 429 with detailed information
-      return RateLimiter.createRateLimitResponse(rateLimitResult.rateLimitInfo, 429)
-    }
-
-    const apiKeyData = rateLimitResult.apiKeyData
-
     // Extract GitHub repository details from request body (already parsed above)
     const { owner, repo, githubUrl } = requestBody || {}
 
@@ -99,14 +89,23 @@ export async function POST(request) {
       console.log('Warning: No GitHub token provided. Using unauthenticated requests with rate limits.')
     }
 
-    // Fetch repository data from GitHub
+    // Start all operations in parallel for maximum performance
     try {
-      // Fetch README and repository metadata in parallel
-      const [readme, repoData, latestRelease] = await Promise.all([
+      // Execute rate limiting check and GitHub API calls in parallel
+      const [rateLimitResult, readme, repoData, latestRelease] = await Promise.all([
+        RateLimiter.checkAndIncrementUsage(apiKey, 1),
         fetchGitHubReadme(targetOwner, targetRepo, githubToken),
         fetchRepositoryData(targetOwner, targetRepo, githubToken),
         fetchLatestRelease(targetOwner, targetRepo, githubToken)
       ])
+
+      // Check rate limits after parallel execution
+      if (!rateLimitResult.allowed) {
+        // Rate limit exceeded - return 429 with detailed information
+        return RateLimiter.createRateLimitResponse(rateLimitResult.rateLimitInfo, 429)
+      }
+
+      const apiKeyData = rateLimitResult.apiKeyData
 
       // Generate AI summary using LangChain
       const aiSummary = await summarizeGitHubRepo(readme.content)
@@ -220,29 +219,43 @@ export async function DELETE() {
   )
 }
 
+// Create shared GitHub API headers factory
+function createGitHubHeaders(token) {
+  const headers = {
+    'Accept': 'application/vnd.github.v3+json',
+    'User-Agent': 'SaaS-API-System',
+    'X-GitHub-Api-Version': '2022-11-28'
+  }
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`
+  }
+  
+  return headers
+}
+
 // GitHub README fetcher function
 async function fetchGitHubReadme(owner, repo, token) {
   try {
-    const headers = {
-      'Accept': 'application/vnd.github.v3+json',
-      'User-Agent': 'SaaS-API-System'
-    }
-    
-    // Add authorization header only if token is provided
-    if (token) {
-      headers['Authorization'] = `token ${token}`
-    }
+    const headers = createGitHubHeaders(token)
+    const baseUrl = `https://api.github.com/repos/${owner}/${repo}`
 
-    // Try to fetch README.md first
-    let readmeResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/readme`, { headers })
+    // Try to fetch README.md first, with optimized error handling
+    let readmeResponse = await fetch(`${baseUrl}/readme`, { 
+      headers,
+      signal: AbortSignal.timeout(10000) // 10 second timeout
+    })
     
     if (!readmeResponse.ok) {
       // If README.md not found, try README (without extension)
-      readmeResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/README`, { headers })
+      readmeResponse = await fetch(`${baseUrl}/contents/README`, { 
+        headers,
+        signal: AbortSignal.timeout(10000)
+      })
     }
 
     if (!readmeResponse.ok) {
-      throw new Error(`README not found: ${readmeResponse.status === 404 ? 'No README file found' : 'GitHub API error'}`)
+      throw new Error(`README not found: ${readmeResponse.status === 404 ? 'No README file found' : `GitHub API error ${readmeResponse.status}`}`)
     }
 
     const readmeData = await readmeResponse.json()
@@ -269,20 +282,15 @@ async function fetchGitHubReadme(owner, repo, token) {
 // GitHub repository data fetcher function
 async function fetchRepositoryData(owner, repo, token) {
   try {
-    const headers = {
-      'Accept': 'application/vnd.github.v3+json',
-      'User-Agent': 'SaaS-API-System'
-    }
-    
-    // Add authorization header only if token is provided
-    if (token) {
-      headers['Authorization'] = `token ${token}`
-    }
+    const headers = createGitHubHeaders(token)
 
-    const repoResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}`, { headers })
+    const repoResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}`, { 
+      headers,
+      signal: AbortSignal.timeout(8000) // 8 second timeout
+    })
     
     if (!repoResponse.ok) {
-      throw new Error(`Repository not found: ${repoResponse.status === 404 ? 'Repository does not exist or is private' : 'GitHub API error'}`)
+      throw new Error(`Repository not found: ${repoResponse.status === 404 ? 'Repository does not exist or is private' : `GitHub API error ${repoResponse.status}`}`)
     }
 
     const repoData = await repoResponse.json()
@@ -297,17 +305,12 @@ async function fetchRepositoryData(owner, repo, token) {
 // GitHub latest release fetcher function
 async function fetchLatestRelease(owner, repo, token) {
   try {
-    const headers = {
-      'Accept': 'application/vnd.github.v3+json',
-      'User-Agent': 'SaaS-API-System'
-    }
-    
-    // Add authorization header only if token is provided
-    if (token) {
-      headers['Authorization'] = `token ${token}`
-    }
+    const headers = createGitHubHeaders(token)
 
-    const releaseResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/releases/latest`, { headers })
+    const releaseResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/releases/latest`, { 
+      headers,
+      signal: AbortSignal.timeout(6000) // 6 second timeout
+    })
     
     if (!releaseResponse.ok) {
       if (releaseResponse.status === 404) {
