@@ -2,9 +2,9 @@
 
 A comprehensive dashboard for managing SaaS API keys with full CRUD operations, enhanced with AI-powered GitHub repository analysis. Built with Next.js 15, Supabase, Tailwind CSS, and LangChain.
 
-## 🚀 **Project Status: Feature Complete**
+## 🚀 **Project Status: Production Ready**
 
-This project has evolved from a basic API key management system to a comprehensive platform that includes intelligent GitHub repository analysis using AI.
+This project has evolved from a basic API key management system to a comprehensive, production-ready platform featuring intelligent GitHub repository analysis, user authentication, rate limiting, and interactive demonstrations.
 
 ## ✨ **Core Features**
 
@@ -16,6 +16,8 @@ This project has evolved from a basic API key management system to a comprehensi
 - ✅ **Permission System** (read, write, delete) with role-based access
 - ✅ **Secure API Key Generation** with unique `api_` prefixes
 - ✅ **Copy to Clipboard** functionality with visual feedback
+- ✅ **API Key Limits** (3 keys per user) with enforcement
+- ✅ **User-Specific Operations** with authenticated access control
 
 ### **AI-Powered GitHub Analysis** 🆕
 - ✅ **GitHub README Summarizer** using LangChain and OpenAI
@@ -24,6 +26,10 @@ This project has evolved from a basic API key management system to a comprehensi
 - ✅ **Automatic URL Parsing** from GitHub repository URLs
 - ✅ **Structured AI Output** with summary and cool facts
 - ✅ **Fallback Handling** for various README formats
+- ✅ **Repository Metadata** with stars, forks, language, and latest releases
+- ✅ **Parallel API Calls** for optimized performance (2-4 second responses)
+- ✅ **Rate Limiting Protection** with atomic usage tracking
+- ✅ **Interactive Demo** with realistic simulated responses
 
 ### **User Experience**
 - ✅ **Responsive Design** optimized for all devices
@@ -32,6 +38,10 @@ This project has evolved from a basic API key management system to a comprehensi
 - ✅ **Loading States** and comprehensive error handling
 - ✅ **Empty States** with clear call-to-action buttons
 - ✅ **Sidebar Navigation** with active page highlighting
+- ✅ **Google OAuth Authentication** with NextAuth.js integration
+- ✅ **User Profile Management** with avatar fallbacks
+- ✅ **API Playground** for testing and validation
+- ✅ **Glassmorphism Design** with dark purple liquid theme
 
 ## 🏗️ **Architecture Overview**
 
@@ -39,14 +49,22 @@ This project has evolved from a basic API key management system to a comprehensi
 src/
 ├── app/
 │   ├── api/
-│   │   ├── api-keys/              # REST API endpoints for key management
-│   │   └── github-summarizer/     # AI-powered GitHub analysis endpoint
+│   │   ├── user/api-keys/         # Authenticated REST API endpoints
+│   │   ├── github-summarizer/     # AI-powered GitHub analysis endpoint
+│   │   ├── validate-api-key/      # API key validation endpoint
+│   │   └── auth/                  # NextAuth.js authentication
 │   ├── dashboards/                # Main dashboard with sidebar navigation
 │   │   ├── components/            # Modular UI components
-│   │   └── api-playground/        # API key validation playground
-│   └── page.js                    # Landing page
+│   │   └── api-playground/        # API key testing and GitHub analysis
+│   └── page.js                    # Landing page with interactive demo
+├── components/
+│   ├── ui/                        # Reusable UI components
+│   ├── interactive-demo-section.jsx  # GitHub API demo with simulated data
+│   └── ProtectedRoute.js          # Authentication wrapper
 ├── lib/
 │   ├── apiKeys.js                 # Client-side API service
+│   ├── auth-utils.js              # Authentication utilities
+│   ├── rate-limiter.js            # Rate limiting utilities
 │   ├── supabase.js                # Database configuration
 │   └── langchain-chain.js         # AI summarization chain
 ```
@@ -56,9 +74,11 @@ src/
 - **Frontend**: Next.js 15, React 19, Tailwind CSS
 - **Backend**: Next.js API Routes with server-side rendering
 - **Database**: Supabase (PostgreSQL) with Row Level Security
+- **Authentication**: NextAuth.js with Google OAuth
 - **AI Integration**: LangChain with OpenAI GPT-5-nano
-- **Styling**: Tailwind CSS with custom component library
+- **Styling**: Tailwind CSS with glassmorphism design system
 - **Icons**: Lucide React for consistent iconography
+- **State Management**: React hooks with client-side caching
 - **Deployment**: Vercel with automatic deployments
 
 ## 📊 **Database Schema**
@@ -66,17 +86,33 @@ src/
 The system uses a PostgreSQL database with the following structure:
 
 ```sql
+users table:
+- id: Primary key (UUID)
+- email: User email (unique)
+- name: User display name
+- image_url: Profile picture URL
+- created_at: Account creation timestamp
+
 api_keys table:
 - id: Primary key (auto-incrementing)
+- user_id: Foreign key to users table (required)
 - name: API key name (required)
 - description: Optional description
 - key: Unique API key string (starts with 'api_')
 - type: Key type (dev/live/test)
 - usage: Usage count for tracking
+- usage_limit: Maximum usage allowed (default: 1000)
+- rate_limit_window: Time window for rate limiting (monthly/daily/hourly)
+- rate_limit_reset_at: When the usage counter resets
 - permissions: JSON array of permissions (read, write, delete)
 - created_at: Creation timestamp
 - updated_at: Last update timestamp
 - last_used: Last usage timestamp
+
+Row Level Security (RLS):
+- Users can only access their own API keys
+- Authenticated operations only
+- Admin bypass for service operations
 ```
 
 ## 🚀 **Getting Started**
@@ -85,6 +121,7 @@ api_keys table:
 - Node.js 18+ 
 - npm or yarn
 - Supabase account
+- Google Cloud Console project (for OAuth)
 - OpenAI API key (for AI features)
 
 ### **Installation**
@@ -112,11 +149,20 @@ api_keys table:
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
    SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
    
+   # Authentication Configuration
+   NEXTAUTH_URL=http://localhost:3000
+   NEXTAUTH_SECRET=your_generated_secret
+   GOOGLE_CLIENT_ID=your_google_client_id
+   GOOGLE_CLIENT_SECRET=your_google_client_secret
+   
    # GitHub Configuration (Optional)
    GITHUB_TOKEN=your_github_personal_access_token
    
    # OpenAI Configuration (Required for AI Summarization)
    OPENAI_API_KEY=your_openai_api_key
+   
+   # Demo Configuration
+   NEXT_PUBLIC_DEMO_API_KEY=demo_key_for_testing
    ```
 
 4. **Set up database**
@@ -134,32 +180,44 @@ api_keys table:
 
 ## 📱 **Usage Guide**
 
+### **Getting Started**
+1. **Sign In**: Use Google OAuth to authenticate (`/auth/signin`)
+2. **Dashboard Access**: Navigate to `/dashboards` for the main interface
+3. **Profile Setup**: Your profile appears in the bottom navigation with avatar
+
 ### **API Key Management**
-1. **Navigate to Dashboard**: Access `/dashboards` for the main interface
-2. **Create Keys**: Click "Add" button to generate new API keys
-3. **Manage Permissions**: Set read, write, and delete permissions
-4. **Track Usage**: Monitor individual and total usage across all keys
-5. **Copy Keys**: Use the copy button for secure key sharing
+1. **Create Keys**: Click "Add" button to generate new API keys (max 3 per user)
+2. **Manage Permissions**: Set read, write, and delete permissions
+3. **Track Usage**: Monitor individual and total usage across all keys
+4. **Copy Keys**: Use the copy button for secure key sharing
+5. **Rate Limiting**: Each key has usage limits with automatic reset
 
 ### **GitHub Repository Analysis** 🆕
-1. **Use the AI Endpoint**: POST to `/api/github-summarizer`
-2. **Provide GitHub URL**: Send `{"githubUrl": "https://github.com/owner/repo"}`
-3. **Get AI Summary**: Receive structured analysis with summary and cool facts
-4. **API Key Required**: Include your API key in the `apiKey` header
+1. **Interactive Demo**: Try the landing page demo with simulated responses
+2. **API Playground**: Use `/dashboards/api-playground` for real API testing
+3. **API Endpoint**: POST to `/api/github-summarizer`
+4. **Request Format**: Send `{"githubUrl": "https://github.com/owner/repo"}`
+5. **Authentication**: Include your API key in the `apiKey` header
+6. **Rich Response**: Get repository metadata, stars, releases, and AI summary
 
 ### **API Playground**
-- **Test API Keys**: Use `/dashboards/api-playground` to validate keys
-- **Real-time Validation**: Instant feedback on key validity and permissions
-- **Usage Tracking**: Monitor how your API keys are being used
+- **Key Validation**: Test API key validity and permissions
+- **GitHub Testing**: Test the summarizer API with real GitHub URLs
+- **Usage Monitoring**: Real-time usage and rate limit tracking
+- **Response Analysis**: Detailed response structure and timing
 
 ## 🔒 **Security Features**
 
 - **Row Level Security (RLS)** enabled on all database tables
+- **Google OAuth Authentication** with NextAuth.js
+- **User-Specific Data Access** with JWT-based authentication
 - **Environment Variables** for sensitive configuration management
 - **Input Validation** on all API endpoints with proper error handling
 - **Secure API Key Generation** with unique prefixes and validation
 - **Permission-based Access Control** with granular permissions
-- **API Key Authentication** required for all protected endpoints
+- **Rate Limiting Protection** with atomic usage tracking
+- **API Key Limits** (3 per user) to prevent abuse
+- **Authenticated Endpoints** (`/api/user/*`) for secure operations
 
 ## 🧠 **AI Integration Details**
 
@@ -172,8 +230,11 @@ api_keys table:
 ### **GitHub Analysis Features**
 - **Smart URL Parsing**: Automatically extracts owner/repo from GitHub URLs
 - **README Processing**: Fetches and analyzes repository documentation
+- **Repository Metadata**: Stars, forks, language, size, and release information
+- **Parallel API Calls**: README, repo data, and releases fetched simultaneously
+- **Rate Limiting**: Built-in usage tracking with automatic limit enforcement
 - **Fallback Support**: Handles various README formats and locations
-- **Rate Limit Aware**: Respects GitHub API limits with optional authentication
+- **Performance Optimized**: 2-4 second response times with 4-way parallelization
 
 ## 🚧 **Development Journey & Lessons Learned**
 
@@ -183,6 +244,10 @@ api_keys table:
 - **API Key Validation**: Implemented robust header and body parsing
 - **Vercel Deployment**: Resolved dependency conflicts and font issues
 - **AI Integration**: Successfully integrated LangChain with modern patterns
+- **User Authentication**: Implemented secure Google OAuth with NextAuth.js
+- **Rate Limiting**: Built atomic usage tracking with concurrent request handling
+- **User Profile Management**: Created robust avatar system with fallbacks
+- **API Key Limits**: Enforced per-user limits with proper error handling
 
 ### **Technical Decisions**
 - **Component Architecture**: Modular design with separate concerns
@@ -249,22 +314,30 @@ This project is licensed under the MIT License.
 - OpenAI integration for intelligent summarization
 - Structured output with summary and cool facts
 
-### **Phase 3: Advanced Features (🔄 In Progress)**
-- Enhanced error handling and validation
-- Performance optimizations
-- Additional AI capabilities
+### **Phase 3: Advanced Features (✅ Complete)**
+- ✅ User authentication and multi-tenancy with Google OAuth
+- ✅ API rate limiting with atomic usage tracking
+- ✅ Enhanced error handling and validation
+- ✅ Performance optimizations with parallel API calls
+- ✅ Interactive demo with simulated responses
 
-### **Phase 4: Enterprise Features (📋 Planned)**
-- User authentication and multi-tenancy
-- Advanced analytics and reporting
-- API rate limiting and quotas
-- Webhook integrations
+### **Phase 4: Enterprise Features (📋 Future)**
+- Advanced analytics and reporting dashboard
+- Webhook integrations for real-time notifications
+- Team management and collaborative features
+- API usage analytics and insights
+- Custom rate limiting configurations
 
 ## 🌟 **What Makes This Project Special**
 
-- **AI-Powered Insights**: Intelligent analysis of GitHub repositories
+- **AI-Powered Insights**: Intelligent analysis of GitHub repositories with comprehensive metadata
 - **Modern Architecture**: Built with the latest Next.js and React patterns
-- **Production Ready**: Comprehensive error handling and security
+- **Production Ready**: Comprehensive error handling, security, and authentication
+- **Performance Optimized**: 2-4 second response times with parallel processing
+- **User-Centric Design**: Secure multi-tenancy with Google OAuth integration
+- **Rate Limiting**: Built-in protection with atomic usage tracking
+- **Interactive Demo**: Realistic simulated responses for showcasing capabilities
+- **Glassmorphism UI**: Beautiful dark purple liquid glass design theme
 - **Developer Experience**: Clean code structure and modular components
 - **Cost Effective**: Optimized AI usage with GPT-5-nano
 - **Real-World Tested**: Deployed and tested in production environments
@@ -273,4 +346,4 @@ This project is licensed under the MIT License.
 
 **Built with ❤️ using Next.js 15, Supabase, Tailwind CSS, and LangChain**
 
-*This project represents a journey from basic API management to intelligent repository analysis, showcasing modern web development practices and AI integration.*
+*This project represents a complete journey from basic API management to a production-ready platform with intelligent repository analysis, user authentication, rate limiting, and interactive demonstrations - showcasing modern web development practices and AI integration.*
