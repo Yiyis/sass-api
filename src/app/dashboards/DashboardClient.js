@@ -28,6 +28,9 @@ export default function DashboardClient() {
   const [totalUsage, setTotalUsage] = useState(0)
   const [copySuccess, setCopySuccess] = useState({})
   const [isClient, setIsClient] = useState(false)
+  
+  // API key limit constants
+  const MAX_API_KEYS = 3
 
   // Ensure we're on the client side
   useEffect(() => {
@@ -92,11 +95,20 @@ export default function DashboardClient() {
         )
       } else {
         // Create new key
-        const { data, error } = await createApiKey(formData)
-        if (error) throw error
+        const result = await createApiKey(formData)
+        
+        if (result.error) {
+          // Handle API key limit error specifically
+          if (result.error.includes('maximum limit')) {
+            setError(result.error)
+          } else {
+            setError(`Failed to create API key: ${result.error}`)
+          }
+          return
+        }
         
         // Add to local state
-        setApiKeys(keys => [data, ...keys])
+        setApiKeys(keys => [result.data, ...keys])
         
         // Refresh total usage
         fetchTotalUsage()
@@ -104,7 +116,7 @@ export default function DashboardClient() {
       
       resetForm()
     } catch (err) {
-      setError('Failed to save API key')
+      setError(`Failed to save API key: ${err.message || err}`)
       console.error('Error saving API key:', err)
     }
   }
@@ -205,20 +217,43 @@ export default function DashboardClient() {
       {/* API Keys Section */}
       <div className="glass rounded-xl border border-border/30 p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-          <h3 className="text-lg sm:text-xl font-semibold text-foreground">API Keys</h3>
+          <div>
+            <h3 className="text-lg sm:text-xl font-semibold text-foreground">API Keys</h3>
+            <p className="text-sm text-muted-foreground">
+              {apiKeys.length} of {MAX_API_KEYS} keys used
+            </p>
+          </div>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors w-full sm:w-auto"
+            disabled={apiKeys.length >= MAX_API_KEYS}
+            className={`px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors w-full sm:w-auto ${
+              apiKeys.length >= MAX_API_KEYS
+                ? 'bg-muted text-muted-foreground cursor-not-allowed'
+                : 'bg-primary hover:bg-primary/90 text-primary-foreground'
+            }`}
+            title={apiKeys.length >= MAX_API_KEYS ? `Maximum of ${MAX_API_KEYS} API keys allowed` : 'Create new API key'}
           >
             <Plus size={16} />
             Add
+            {apiKeys.length >= MAX_API_KEYS && (
+              <span className="text-xs ml-1">(Limit Reached)</span>
+            )}
           </button>
         </div>
         
-        <p className="text-muted-foreground mb-6 text-sm sm:text-base">
-          The key is used to authenticate your requests to the API. To learn more, see the{' '}
-          <a href="#" className="text-primary hover:text-primary/90 underline">documentation page</a>.
-        </p>
+        <div className="mb-6">
+          <p className="text-muted-foreground text-sm sm:text-base mb-2">
+            The key is used to authenticate your requests to the API. To learn more, see the{' '}
+            <a href="#" className="text-primary hover:text-primary/90 underline">documentation page</a>.
+          </p>
+          
+          {apiKeys.length >= MAX_API_KEYS && (
+            <div className="bg-amber-500/10 border border-amber-500/20 text-amber-300 p-3 rounded-lg text-sm">
+              <strong>API Key Limit Reached:</strong> You have reached the maximum limit of {MAX_API_KEYS} API keys. 
+              Please delete an existing key before creating a new one.
+            </div>
+          )}
+        </div>
 
         <ErrorDisplay error={error} />
 
@@ -237,7 +272,11 @@ export default function DashboardClient() {
                 onDelete={handleDelete}
               />
             ) : (
-              <EmptyState onCreateClick={() => setIsModalOpen(true)} />
+              <EmptyState 
+                onCreateClick={() => setIsModalOpen(true)} 
+                canCreate={apiKeys.length < MAX_API_KEYS}
+                maxKeys={MAX_API_KEYS}
+              />
             )}
           </>
         )}
@@ -257,6 +296,8 @@ export default function DashboardClient() {
         onFormChange={handleFormChange}
         onSubmit={handleSubmit}
         onClose={resetForm}
+        currentKeyCount={apiKeys.length}
+        maxKeys={MAX_API_KEYS}
       />
     </div>
   )

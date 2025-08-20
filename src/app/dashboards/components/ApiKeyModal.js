@@ -4,7 +4,9 @@ export default function ApiKeyModal({
   formData, 
   onFormChange, 
   onSubmit, 
-  onClose 
+  onClose,
+  currentKeyCount = 0,
+  maxKeys = 3
 }) {
   if (!isOpen) return null
 
@@ -14,6 +16,19 @@ export default function ApiKeyModal({
         <h2 className="text-lg sm:text-xl font-semibold mb-4 text-foreground">
           {editingKey ? 'Edit API Key' : 'Create New API Key'}
         </h2>
+        
+        {!editingKey && (
+          <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+            <p className="text-sm text-blue-300">
+              <strong>API Key Limit:</strong> {currentKeyCount} of {maxKeys} keys used
+            </p>
+            {currentKeyCount >= maxKeys && (
+              <p className="text-xs text-amber-300 mt-1">
+                ⚠️ You have reached the maximum limit. Delete an existing key to create a new one.
+              </p>
+            )}
+          </div>
+        )}
         
         <form onSubmit={onSubmit} className="space-y-3 sm:space-y-4">
           <div>
@@ -71,7 +86,13 @@ export default function ApiKeyModal({
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <button
               type="submit"
-              className="w-full sm:flex-1 bg-primary hover:bg-primary/90 text-primary-foreground py-2 px-4 rounded-md transition-colors"
+              disabled={!editingKey && currentKeyCount >= maxKeys}
+              className={`w-full sm:flex-1 py-2 px-4 rounded-md transition-colors ${
+                !editingKey && currentKeyCount >= maxKeys
+                  ? 'bg-muted text-muted-foreground cursor-not-allowed'
+                  : 'bg-primary hover:bg-primary/90 text-primary-foreground'
+              }`}
+              title={!editingKey && currentKeyCount >= maxKeys ? 'API key limit reached' : ''}
             >
               {editingKey ? 'Update' : 'Create'}
             </button>

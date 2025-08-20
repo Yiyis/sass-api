@@ -42,6 +42,34 @@ export async function POST(request) {
       )
     }
 
+    // Check current API key count for this user
+    const { data: existingKeys, error: countError } = await supabaseAdmin
+      .from('api_keys')
+      .select('id')
+      .eq('user_id', userId)
+
+    if (countError) {
+      console.error('Error checking API key count:', countError)
+      return NextResponse.json(
+        { data: null, error: 'Failed to check API key limit' },
+        { status: 500 }
+      )
+    }
+
+    // Enforce 3 API key limit per user
+    const MAX_API_KEYS = 3
+    if (existingKeys && existingKeys.length >= MAX_API_KEYS) {
+      return NextResponse.json(
+        { 
+          data: null, 
+          error: `You have reached the maximum limit of ${MAX_API_KEYS} API keys. Please delete an existing key before creating a new one.`,
+          limit: MAX_API_KEYS,
+          current: existingKeys.length
+        },
+        { status: 400 }
+      )
+    }
+
     const newKey = {
       name,
       description: description || '',

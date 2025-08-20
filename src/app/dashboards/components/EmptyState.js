@@ -1,4 +1,4 @@
-export default function EmptyState({ onCreateClick }) {
+export default function EmptyState({ onCreateClick, canCreate = true, maxKeys = 3 }) {
   return (
     <div className="text-center py-12">
       <div className="text-muted-foreground mb-4">
@@ -7,10 +7,21 @@ export default function EmptyState({ onCreateClick }) {
         </svg>
       </div>
       <h3 className="text-lg font-medium text-foreground mb-2">No API keys yet</h3>
-      <p className="text-muted-foreground mb-4">Get started by creating your first API key</p>
+      <p className="text-muted-foreground mb-4">
+        {canCreate 
+          ? "Get started by creating your first API key" 
+          : `You can create up to ${maxKeys} API keys`
+        }
+      </p>
       <button
         onClick={onCreateClick}
-        className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg transition-colors"
+        disabled={!canCreate}
+        className={`px-4 py-2 rounded-lg transition-colors ${
+          canCreate
+            ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
+            : 'bg-muted text-muted-foreground cursor-not-allowed'
+        }`}
+        title={!canCreate ? `Maximum of ${maxKeys} API keys allowed` : ''}
       >
         Create API Key
       </button>
