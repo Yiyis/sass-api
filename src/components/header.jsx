@@ -23,7 +23,7 @@ export function Header() {
           </Link>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-2">
-          <nav className="hidden sm:flex items-center space-x-4 lg:space-x-6 text-sm font-medium">
+          <nav className="hidden sm:flex items-center space-x-4 lg:space-x-6 text-sm font-medium mr-4">
             <Link href="#features" className="transition-colors hover:text-foreground/80 text-foreground/60" onClick={() => setIsOpen(false)}>
               Features
             </Link>
