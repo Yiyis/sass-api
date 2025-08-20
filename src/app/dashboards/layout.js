@@ -98,19 +98,6 @@ export default function DashboardLayout({ children }) {
             </li>
             <li>
               <Link 
-                href="/dashboards/use-cases" 
-                className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
-                  isActive('/dashboards/use-cases') 
-                    ? 'bg-primary/20 text-primary font-medium' 
-                    : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
-                }`}
-              >
-                <Star size={20} />
-                Use Cases
-              </Link>
-            </li>
-            <li>
-              <Link 
                 href="/dashboards/billing" 
                 className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
                   isActive('/dashboards/billing') 
@@ -120,19 +107,6 @@ export default function DashboardLayout({ children }) {
               >
                 <CreditCard size={20} />
                 Billing
-              </Link>
-            </li>
-            <li>
-              <Link 
-                href="/dashboards/settings" 
-                className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
-                  isActive('/dashboards/settings') 
-                    ? 'bg-primary/20 text-primary font-medium' 
-                    : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
-                }`}
-              >
-                <Settings size={20} />
-                Settings
               </Link>
             </li>
             <li>
