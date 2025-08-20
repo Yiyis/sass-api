@@ -3,12 +3,56 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Code, Star, CreditCard, Settings, FileText, Menu, X } from 'lucide-react'
+import { Home, Code, Star, CreditCard, Settings, FileText, Menu, X, LogOut, User } from 'lucide-react'
+import { useSession, signOut } from 'next-auth/react'
 import ProtectedRoute from '@/components/ProtectedRoute'
+
+// UserAvatar component for consistent avatar display
+function UserAvatar({ user, size = 'default' }) {
+  const [imageError, setImageError] = useState(false)
+  
+  const getInitials = (name, email) => {
+    if (name) {
+      const names = name.split(' ')
+      if (names.length >= 2) {
+        return `${names[0].charAt(0)}${names[1].charAt(0)}`.toUpperCase()
+      }
+      return name.charAt(0).toUpperCase()
+    }
+    return email ? email.charAt(0).toUpperCase() : 'U'
+  }
+
+  const sizeClasses = {
+    small: 'w-6 h-6 text-xs',
+    default: 'w-8 h-8 text-xs',
+    large: 'w-10 h-10 text-sm'
+  }
+
+  return (
+    <div className={`${sizeClasses[size] || sizeClasses.default} rounded-full ring-2 ring-primary/20 flex-shrink-0 bg-primary/20 flex items-center justify-center overflow-hidden`}>
+      {user?.image && !imageError ? (
+        <img
+          src={user.image}
+          alt={user.name || user.email || 'User avatar'}
+          className="w-full h-full object-cover"
+          onError={() => setImageError(true)}
+          onLoad={() => setImageError(false)}
+        />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center">
+          <span className="text-primary font-semibold">
+            {getInitials(user?.name, user?.email)}
+          </span>
+        </div>
+      )}
+    </div>
+  )
+}
 
 export default function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const pathname = usePathname()
+  const { data: session } = useSession()
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
@@ -128,7 +172,29 @@ export default function DashboardLayout({ children }) {
           </ul>
         </nav>
 
-        {/* User Section - Removed duplicate, user info shown in ProtectedRoute header */}
+        {/* User Section */}
+        {session && (
+          <div className="p-3 sm:p-4 border-t border-border/30 mt-auto">
+            <div className="flex items-center gap-3 p-3 rounded-lg glass-subtle">
+              <UserAvatar user={session.user} size="default" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-foreground truncate">
+                  {session.user.name || 'User'}
+                </p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {session.user.email || 'No email'}
+                </p>
+              </div>
+              <button
+                onClick={() => signOut({ callbackUrl: '/' })}
+                className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-md transition-colors flex-shrink-0"
+                title="Sign Out"
+              >
+                <LogOut size={16} />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Main Content Area */}
