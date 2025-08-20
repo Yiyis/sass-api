@@ -10,7 +10,8 @@ export function PricingSection() {
       period: "forever",
       description: "Perfect for getting started with GitHub analysis",
       features: [
-        "5 API key creations per month",
+        "3 API key creations per user",
+        "100 requests per month",
         "Basic usage analytics",
         "Read permissions",
         "Community support",
