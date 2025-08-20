@@ -17,7 +17,7 @@ export function Header() {
               <Brain className="w-4 h-4 text-primary-foreground" />
             </div>
             <div className="flex flex-col">
-              <span className="font-bold text-foreground text-sm sm:text-base">GitHub Analyzer</span>
+              <span className="font-bold text-foreground text-sm sm:text-base">Git Repo Scope</span>
               <span className="text-xs text-muted-foreground">Made by Yiyi</span>
             </div>
           </Link>

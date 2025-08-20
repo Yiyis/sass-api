@@ -225,7 +225,7 @@ export function InteractiveDemoSection() {
             <Zap className="w-8 h-8 text-accent" />
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-            Try the GitHub Summarizer API
+            Try the Git Repo Scope API
           </h2>
           <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
             Experience a realistic demonstration of our AI-powered GitHub analysis. View the API request structure 
@@ -254,7 +254,7 @@ export function InteractiveDemoSection() {
                   </div>
                 </div>
                 <CardDescription>
-                  View the JSON payload structure for the GitHub Summarizer API (demo mode)
+                  View the JSON payload structure for the Git Repo Scope API (demo mode)
                 </CardDescription>
                 
                 {/* Headers Display */}
@@ -348,7 +348,7 @@ export function InteractiveDemoSection() {
                   )}
                 </div>
                 <CardDescription>
-                  Simulated response from the GitHub Summarizer API
+                  Simulated response from the Git Repo Scope API
                 </CardDescription>
               </CardHeader>
               <CardContent>

@@ -31,7 +31,7 @@ export function Footer() {
               <div className="w-6 h-6 bg-primary rounded flex items-center justify-center">
                 <Brain className="w-4 h-4 text-primary-foreground" />
               </div>
-              <span className="font-bold text-foreground">GitHub Analyzer</span>
+              <span className="font-bold text-foreground">Git Repo Scope</span>
             </div>
             <p className="text-sm text-muted-foreground">AI-powered GitHub analysis for the modern developer</p>
           </div>
@@ -77,7 +77,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-border mt-6 sm:mt-8 pt-6 sm:pt-8 text-center text-sm text-muted-foreground">
-          © 2024 GitHub Analyzer. All rights reserved.
+          © 2024 Git Repo Scope. All rights reserved.
         </div>
       </div>
     </footer>

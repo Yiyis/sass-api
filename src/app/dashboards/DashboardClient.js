@@ -284,8 +284,7 @@ export default function DashboardClient() {
 
       {/* Footer */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-muted-foreground text-center sm:text-left">
-        <span className="text-primary font-medium">GitHub Analyzer Pro</span>
-        <span>Powered by Next.js</span>
+        <span className="text-primary font-medium">Git Repo Scope Pro</span>
       </div>
 
       {/* Modal */}

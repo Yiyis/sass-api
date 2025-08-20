@@ -13,7 +13,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata = {
-  title: "GitHub Analyzer - AI-Powered Repository Analysis",
+  title: "Git Repo Scope - AI-Powered Repository Analysis",
   description: "A comprehensive platform for analyzing GitHub repositories with AI, managing API keys, and gaining development insights",
 };
 

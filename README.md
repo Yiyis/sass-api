@@ -1,4 +1,4 @@
-# GitHub Analyzer
+# Git Repo Scope
 
 A comprehensive dashboard for managing SaaS API keys with full CRUD operations, enhanced with AI-powered GitHub repository analysis. Built with Next.js 15, Supabase, Tailwind CSS, and LangChain.
 

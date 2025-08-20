@@ -84,7 +84,7 @@ export default function DashboardLayout({ children }) {
               <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center glow-purple">
                 <span className="text-primary-foreground font-bold text-lg">G</span>
               </div>
-              <span className="text-lg sm:text-xl font-bold text-foreground">GitHub Analyzer</span>
+              <span className="text-lg sm:text-xl font-bold text-foreground">Git Repo Scope</span>
             </div>
             {/* Close button for mobile */}
             <button 
@@ -164,9 +164,7 @@ export default function DashboardLayout({ children }) {
               >
                 <FileText size={20} />
                 Documentation
-                <svg className="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
+
               </Link>
             </li>
           </ul>
@@ -216,7 +214,7 @@ export default function DashboardLayout({ children }) {
                   <span className="truncate">Pages / {pathname === '/dashboards' ? 'Overview' : pathname.split('/').pop().replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
                 </nav>
                 <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground truncate">
-                  {pathname === '/dashboards' ? 'GitHub Analyzer Dashboard' : 
+                  {pathname === '/dashboards' ? 'Git Repo Scope Dashboard' : 
                    pathname === '/dashboards/api-playground' ? 'API Playground' :
                    pathname === '/dashboards/use-cases' ? 'Use Cases' :
                    pathname === '/dashboards/billing' ? 'Billing' :
